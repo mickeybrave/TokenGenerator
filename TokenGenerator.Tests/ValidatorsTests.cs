@@ -10,6 +10,7 @@ namespace TokenGenerator.Tests
         public void ClientIdKeyUserNameValidator_InputComplete_ThrowNoException()
         {
             ClientIdKeyUserNameValidator("123", "123", "456");
+
         }
 
         [Fact]
