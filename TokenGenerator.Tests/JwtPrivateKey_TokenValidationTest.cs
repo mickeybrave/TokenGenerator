@@ -3,10 +3,7 @@ using ForceDotNetJwtCompanion.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.UserSecrets;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -123,9 +120,6 @@ namespace TokenGenerator.Tests
 
             Assert.NotNull(accessToken);
         }
-
-      
-
 
         [Fact]
         public async Task Authenticate_Success_MyTestLogin()
