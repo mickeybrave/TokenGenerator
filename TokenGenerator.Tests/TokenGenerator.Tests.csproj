@@ -5,10 +5,13 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
+
+    <UserSecretsId>3e8c8ed5-49c2-4c8a-8ab5-b54f4571f663</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNet.Testcontainers" Version="1.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">

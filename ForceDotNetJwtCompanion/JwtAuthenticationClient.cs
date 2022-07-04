@@ -133,26 +133,26 @@ namespace ForceDotNetJwtCompanion
             );
         }
 
-        public async Task JwtPrivateKeyByClientIdAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint)
+        public async Task JwtPrivateKeyByClientIdAsync(string clientId, string privateKey, string clientSecret, string username, string tokenEndpoint)
         {
-            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
-                CreateJwt(
-                    clientId,
-                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(key, passphrase),
-                    username,
-                    _isProd ? ProdAudience : TestAudience
-                ),
+            JWT = CreateJwt(
+                   clientId,
+                   KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(privateKey, clientSecret),
+                   username,
+                   _isProd ? ProdAudience : TestAudience);
+
+            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(JWT,
                 clientId,
-                passphrase,
+                clientSecret,
                 tokenEndpoint
             );
         }
 
-        public async Task JwtPrivateKeyAsync(string clientId, string clientSecret, string passphrase, string username, string tokenEndpoint)
+        public async Task JwtPrivateKeyAsync(string clientId, string privateKey, string clientSecret, string username, string tokenEndpoint)
         {
             JWT = CreateJwt(
                     clientId,
-                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(clientSecret, passphrase),
+                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(privateKey, clientSecret),
                     username,
                     _isProd ? ProdAudience : TestAudience
                 );

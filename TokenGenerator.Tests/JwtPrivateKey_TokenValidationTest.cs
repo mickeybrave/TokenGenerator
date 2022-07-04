@@ -1,8 +1,11 @@
 ﻿using ForceDotNetJwtCompanion;
 using ForceDotNetJwtCompanion.Util;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
@@ -11,79 +14,30 @@ namespace TokenGenerator.Tests
 {
     public class JwtPrivateKey_TokenValidationTest
     {
-        [Fact]
-        public async Task Authenticate_Success_CP_TestLogin()
+        private const string ServerKeyTrialAccountFileName = @"\MyTrialServer.key";
+        private const string ServerKeySandBoxFileName = @"\MySandBoxServer.key";
+        private const string AppDataFolderPath = @"\Microsoft\UserSecrets\";
+        private readonly string _secretTrialKeyFilePath;
+        private readonly string _secretSandBoxKeyFilePath;
+
+        private readonly IConfiguration _config;
+        public JwtPrivateKey_TokenValidationTest()
         {
-            var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\Users\brave\AppData\Roaming\Microsoft\UserSecrets\7312e39b-0ff9-46bd-a9c2-8e41c87df628/server.key");
-            var passPhrase = "407958DBB32AC9B8DC1ED8F835365489CFEFA338AA27BED4A68A88E4CF6348DC";
-            var isProd = true;
-            var authClient = new JwtAuthenticationClient(apiVersion, isProd);
-            var clientId = "3MVG9N6eDmZRVJOkDZH0OZB49slELDN0qfY20cVzZzKD4qzubrlLwNS9N0904KET6L2qhRFlyK.4FPUf7wuLA";
-            var redirectUri = "https://login.salesforce.com";
-            var username = "crmservicesf@countdown.co.nz.test";
-            var endpoint =
-            $"https://login.salesforce.com/services/oauth2/token?response_type=token&client_id={clientId}&redirect_uri={redirectUri}";
+            var builder = new ConfigurationBuilder()
+             .AddUserSecrets<JwtPrivateKey_TokenValidationTest>();
 
-            await authClient.JwtPrivateKeyAsync(
-                            clientId,
-                            privateKey,
-                            passPhrase,
-                            username,
-                            endpoint);
+            _config = builder.Build();
 
-            var accessToken = authClient.AccessToken;
-            Assert.NotNull(accessToken);
-        }
+            var userSecretFolderGuidName = Assembly.GetExecutingAssembly()
+                    .GetCustomAttribute<UserSecretsIdAttribute>()
+                    .UserSecretsId;
 
-        [Fact]
-        public async Task Authenticate_Success_CP_TestLogin_ByClientId_Secret()
-        {
-            var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\Users\brave\AppData\Roaming\Microsoft\UserSecrets\7312e39b-0ff9-46bd-a9c2-8e41c87df628/server.key");
-            var passPhrase = "407958DBB32AC9B8DC1ED8F835365489CFEFA338AA27BED4A68A88E4CF6348DC";
-            var isProd = true;
-            var authClient = new JwtAuthenticationClient(apiVersion, isProd);
-            var clientId = "3MVG9N6eDmZRVJOkDZH0OZB49slELDN0qfY20cVzZzKD4qzubrlLwNS9N0904KET6L2qhRFlyK.4FPUf7wuLA";
-            var username = "crmservicesf@countdown.co.nz.test";
-            var endpoint = $"https://login.salesforce.com/services/oauth2/token";
+            var secretsFolder =
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                + AppDataFolderPath + userSecretFolderGuidName;
 
-
-            await authClient.JwtPrivateKeyByClientIdAsync(
-                            clientId,
-                            privateKey,
-                            passPhrase,
-                            username,
-                            endpoint);
-
-            var accessToken = authClient.AccessToken;
-            Assert.NotNull(accessToken);
-        }
-
-        [Fact]
-        public async Task Authenticate_Success_CP_Login_By_ClientId_Secret()
-        {
-            var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\Users\brave\AppData\Roaming\Microsoft\UserSecrets\7312e39b-0ff9-46bd-a9c2-8e41c87df628\server.key");
-            var clientId = "3MVG9N6eDmZRVJOkDZH0OZB49srYoRFK.TOTv_hAW4tLq8l.p3yTo0NqMIRltFTH38nmI6hgThDvEV0XG8d0.";
-            var passPhrase = "DB979B87530485840F0A6912EEEE1CFBF9FFBA6BABC9EE739E3359F6B63F4BF6";
-            var isProd = false;
-
-            var authClient = new JwtAuthenticationClient(apiVersion, isProd);
-            var redirectUri = "https://login.salesforce.com";
-            var endpoint =
-            $"https://login.salesforce.com/services/oauth2/token?response_type=token&client_id={clientId}&redirect_uri={redirectUri}";
-
-            await authClient.JwtPrivateKeyAsync(
-                            clientId,
-                            privateKey,
-                            passPhrase,
-                            "cdx@countdown.co.nz",
-                            endpoint);
-
-            var accessToken = authClient.AccessToken;
-
-            Assert.NotNull(accessToken);
+            _secretTrialKeyFilePath = secretsFolder + ServerKeyTrialAccountFileName;
+            _secretSandBoxKeyFilePath = secretsFolder + ServerKeySandBoxFileName;
         }
 
 
@@ -91,10 +45,13 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_By_ClientId_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
-            var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
+            var privateKey = CommonHelpers.LoadFromFile(_secretTrialKeyFilePath);
+            var clientId = _config["CRM:Trial:ClientId"];
+            var username = _config["CRM:Trial:User"];
+            var clientSecret = _config["CRM:Trial:Secret"];
+
+
             var isProd = true;
-            var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
             var authClient = new JwtAuthenticationClient(apiVersion, isProd);
             var redirectUri = "https://login.salesforce.com";
             var endpoint =
@@ -103,8 +60,8 @@ namespace TokenGenerator.Tests
             await authClient.JwtPrivateKeyAsync(
                             clientId,
                             privateKey,
-                            passPhrase,
-                            "michael.braverman-kxq8@force.com",
+                            clientSecret,
+                            username,
                             endpoint);
 
             var accessToken = authClient.AccessToken;
@@ -116,10 +73,13 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
-            var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
+           
             var isProd = false;
-            var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
+            var privateKey = CommonHelpers.LoadFromFile(_secretTrialKeyFilePath);
+            var clientId = _config["CRM:Trial:ClientId"];
+            var username = _config["CRM:Trial:User"];
+            var clientSecret = _config["CRM:Trial:Secret"];
+
             var authClient = new JwtAuthenticationClient(apiVersion, isProd);
             var redirectUri = "https://login.salesforce.com";
             var endpoint =
@@ -128,8 +88,8 @@ namespace TokenGenerator.Tests
             await authClient.JwtPrivateKeyAsync(
                             clientId,
                             privateKey,
-                            passPhrase,
-                            "michael.braverman-kxq8@force.com",
+                            clientSecret,
+                            username,
                             endpoint);
 
             var accessToken = authClient.AccessToken;
@@ -141,10 +101,13 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_ByClientId_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
-            var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = false;
-            var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
+
+            var privateKey = CommonHelpers.LoadFromFile(_secretTrialKeyFilePath);
+            var clientId = _config["CRM:Trial:ClientId"];
+            var username = _config["CRM:Trial:User"];
+            var clientSecret = _config["CRM:Trial:Secret"];
+
             var authClient = new JwtAuthenticationClient(apiVersion, isProd);
             var endpoint =
             $"https://login.salesforce.com/services/oauth2/token";
@@ -152,8 +115,8 @@ namespace TokenGenerator.Tests
             await authClient.JwtPrivateKeyByClientIdAsync(
                             clientId,
                             privateKey,
-                            passPhrase,
-                            "michael.braverman-kxq8@force.com",
+                            clientSecret,
+                            username,
                             endpoint);
 
             var accessToken = authClient.AccessToken;
@@ -168,10 +131,13 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
-            var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = true;
-            var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
+            var privateKey = CommonHelpers.LoadFromFile(_secretTrialKeyFilePath);
+            var clientId = _config["CRM:Trial:ClientId"];
+            var username = _config["CRM:Trial:User"];
+            var clientSecret = _config["CRM:Trial:Secret"];
+
+          
             var authClient = new JwtAuthenticationClient(apiVersion, isProd);
             var redirectUri = "https://login.salesforce.com";
             var endpoint =
@@ -180,8 +146,8 @@ namespace TokenGenerator.Tests
             await authClient.JwtPrivateKeyAsync(
                             clientId,
                             privateKey,
-                            passPhrase,
-                            "michael.braverman-kxq8@force.com",
+                            clientSecret,
+                            username,
                             endpoint);
 
             var accessToken = authClient.AccessToken;
@@ -194,9 +160,12 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTest_SandBox_CP_Login()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\CP_Sandbox_Certificate\server.key");
-            var clientId = "3MVG9rnryk9FxFMU55T_u.QbYZp.ysHjyKlUDZzdDa5G2j3XhuLwuIu4XMANi1HEr82rtIk2K_udM36YOcDV3";
-            var clientSecret = "00697E8C79FDD630FEB795D1CAAAB6619B3761CB3DBF19E8C33B9940BCFADB3A";
+            var privateKey = CommonHelpers.LoadFromFile(_secretSandBoxKeyFilePath);
+            var clientId = _config["CRM:Sandbox:ClientId"];
+            var username = _config["CRM:Sandbox:User"];
+            var clientSecret = _config["CRM:Sandbox:Secret"];
+
+
             var isProd = false;
           
             var authClient = new JwtAuthenticationClient(apiVersion, isProd);
@@ -208,7 +177,35 @@ namespace TokenGenerator.Tests
                             clientId,
                             privateKey,
                             clientSecret,
-                            "michael.braverman@clearpoint.co.nz.authapi",
+                            username,
+                            endpoint);
+
+            var accessToken = authClient.AccessToken;
+
+            Assert.NotNull(accessToken);
+        }
+
+
+        [Fact]
+        public async Task Authenticate_Success_SandBox_ByClientId_Secret()
+        {
+            var apiVersion = "v50.0";
+            var isProd = false;
+
+            var privateKey = CommonHelpers.LoadFromFile(_secretSandBoxKeyFilePath);
+            var clientId = _config["CRM:Sandbox:ClientId"];
+            var username = _config["CRM:Sandbox:User"];
+            var clientSecret = _config["CRM:Sandbox:Secret"];
+
+            var authClient = new JwtAuthenticationClient(apiVersion, isProd);
+            var endpoint =
+            $"https://test.salesforce.com/services/oauth2/token";
+
+            await authClient.JwtPrivateKeyByClientIdAsync(
+                            clientId,
+                            privateKey,
+                            clientSecret,
+                            username,
                             endpoint);
 
             var accessToken = authClient.AccessToken;
