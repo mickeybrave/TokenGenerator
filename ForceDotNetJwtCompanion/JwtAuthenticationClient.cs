@@ -79,6 +79,7 @@ namespace ForceDotNetJwtCompanion
         private const string TokenRequestEndpointUrl = "https://login.salesforce.com/services/oauth2/token";
         private const string GrantType = "urn:ietf:params:oauth:grant-type:jwt-bearer";
         private const string ProdAudience = "https://login.salesforce.com";
+        private const string RedirectLoginUri = "https://login.salesforce.com";
         private const string TestAudience = "https://test.salesforce.com";
         
         private readonly HttpClient _httpClient;
@@ -131,6 +132,21 @@ namespace ForceDotNetJwtCompanion
             );
         }
 
+        public async Task JwtPrivateKeyByClientIdAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint)
+        {
+            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
+                CreateJwt(
+                    clientId,
+                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(key, passphrase),
+                    username,
+                    _isProd ? ProdAudience : TestAudience
+                ),
+                clientId, 
+                passphrase,
+                tokenEndpoint
+            );
+        }
+
         public async Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint)
         {
             (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
@@ -151,6 +167,58 @@ namespace ForceDotNetJwtCompanion
                 .AddAudience(audience)
                 .AddConsumerKey(clientId)
                 .Build();
+
+        private async Task<AuthToken> CallTokenEndpoint(string jwt, string clientId,string clientSecret, string tokenEndpoint)
+        {
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(tokenEndpoint),
+                Content = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("grant_type", GrantType),
+                    new KeyValuePair<string, string>("client_id", clientId),
+                    new KeyValuePair<string, string>("client_secret", clientSecret),
+                    new KeyValuePair<string, string>("redirect_uri", RedirectLoginUri),
+                    new KeyValuePair<string, string>("assertion", jwt)
+                })
+            };
+            request.Headers.UserAgent.ParseAdd(string.Concat(UserAgent, "/", ApiVersion));
+
+            HttpResponseMessage responseMessage;
+
+            try
+            {
+                responseMessage = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
+            }
+            catch (Exception exc)
+            {
+                throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
+            }
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                var stringResult = await responseMessage.Content.ReadAsStringAsync();
+                var authToken = JsonConvert
+                    .DeserializeObject<AuthToken>(stringResult);
+                return authToken;
+            }
+
+            try
+            {
+                var stringError = await responseMessage.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert
+                    .DeserializeObject<AuthErrorResponse>(stringError);
+                throw new ForceAuthenticationException(
+                    responseMessage.StatusCode,
+                    $"{errorResponse.Error}: {errorResponse.ErrorDescription}"
+                );
+            }
+            catch (Exception exc)
+            {
+                throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
+            }
+        }
 
         private async Task<AuthToken> CallTokenEndpoint(string jwt, string tokenEndpoint)
         {
@@ -179,15 +247,17 @@ namespace ForceDotNetJwtCompanion
             
             if (responseMessage.IsSuccessStatusCode)
             {
+                var stringResult = await responseMessage.Content.ReadAsStringAsync();
                 var authToken = JsonConvert
-                    .DeserializeObject<AuthToken>(await responseMessage.Content.ReadAsStringAsync());
+                    .DeserializeObject<AuthToken>(stringResult);
                 return authToken;
             }
 
             try
             {
+                var stringError = await responseMessage.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert
-                    .DeserializeObject<AuthErrorResponse>(await responseMessage.Content.ReadAsStringAsync());
+                    .DeserializeObject<AuthErrorResponse>(stringError);
                 throw new ForceAuthenticationException(
                     responseMessage.StatusCode,
                     $"{errorResponse.Error}: {errorResponse.ErrorDescription}"
