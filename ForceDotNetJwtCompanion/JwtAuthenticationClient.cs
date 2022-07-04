@@ -67,11 +67,12 @@ namespace ForceDotNetJwtCompanion
         /// <param name="tokenEndpoint">TokenEndpointUrl e.g. https://test.salesforce.com/services/oauth2/token</param>
         Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint);
     }
-    
+
     public class JwtAuthenticationClient : IJwtAuthenticationClient
     {
         public string InstanceUrl { get; set; }
         public string AccessToken { get; set; }
+        public string JWT { get; set; }
         public string Id { get; set; }
         public string ApiVersion { get; set; }
 
@@ -81,26 +82,26 @@ namespace ForceDotNetJwtCompanion
         private const string ProdAudience = "https://login.salesforce.com";
         private const string RedirectLoginUri = "https://login.salesforce.com";
         private const string TestAudience = "https://test.salesforce.com";
-        
+
         private readonly HttpClient _httpClient;
         private readonly bool _disposeHttpClient;
         private readonly bool _isProd;
 
         public JwtAuthenticationClient(
-            string apiVersion = "v50.0", 
+            string apiVersion = "v50.0",
             bool isProd = true
             ) : this(new HttpClient(), apiVersion: apiVersion, isProd: isProd)
         {
         }
-        
+
         public JwtAuthenticationClient(
-            HttpClient httpClient, 
+            HttpClient httpClient,
             string apiVersion = "v50.0",
             bool callerWillDisposeHttpClient = false,
             bool isProd = true
             )
         {
-            
+
             _httpClient = httpClient ?? throw new ArgumentException("httpClient");
             _disposeHttpClient = !callerWillDisposeHttpClient;
             ApiVersion = apiVersion;
@@ -123,7 +124,7 @@ namespace ForceDotNetJwtCompanion
         {
             (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
                 CreateJwt(
-                    clientId, 
+                    clientId,
                     KeyHelpers.CreatePrivateKeyWrapper(key),
                     username,
                     _isProd ? ProdAudience : TestAudience
@@ -141,23 +142,23 @@ namespace ForceDotNetJwtCompanion
                     username,
                     _isProd ? ProdAudience : TestAudience
                 ),
-                clientId, 
+                clientId,
                 passphrase,
                 tokenEndpoint
             );
         }
 
-        public async Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint)
+        public async Task JwtPrivateKeyAsync(string clientId, string clientSecret, string passphrase, string username, string tokenEndpoint)
         {
-            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
-                CreateJwt(
-                    clientId, 
-                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(key, passphrase),
+            JWT = CreateJwt(
+                    clientId,
+                    KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(clientSecret, passphrase),
                     username,
                     _isProd ? ProdAudience : TestAudience
-                ),
-                tokenEndpoint
-            );
+                );
+
+            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(JWT, tokenEndpoint);
+
         }
 
         private string CreateJwt(string clientId, PrivateKeyWrapper keyWrapper, string username, string audience) =>
@@ -168,7 +169,7 @@ namespace ForceDotNetJwtCompanion
                 .AddConsumerKey(clientId)
                 .Build();
 
-        private async Task<AuthToken> CallTokenEndpoint(string jwt, string clientId,string clientSecret, string tokenEndpoint)
+        private async Task<AuthToken> CallTokenEndpoint(string jwt, string clientId, string clientSecret, string tokenEndpoint)
         {
             var request = new HttpRequestMessage
             {
@@ -235,7 +236,7 @@ namespace ForceDotNetJwtCompanion
             request.Headers.UserAgent.ParseAdd(string.Concat(UserAgent, "/", ApiVersion));
 
             HttpResponseMessage responseMessage;
-            
+
             try
             {
                 responseMessage = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
@@ -244,7 +245,7 @@ namespace ForceDotNetJwtCompanion
             {
                 throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
             }
-            
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 var stringResult = await responseMessage.Content.ReadAsStringAsync();

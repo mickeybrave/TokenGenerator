@@ -91,7 +91,7 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_By_ClientId_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\cerficate\server.key");
+            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
             var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = true;
             var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
@@ -116,7 +116,7 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\cerficate\server.key");
+            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
             var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = false;
             var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
@@ -141,7 +141,7 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin_ByClientId_Secret()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\cerficate\server.key");
+            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
             var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = false;
             var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
@@ -168,7 +168,7 @@ namespace TokenGenerator.Tests
         public async Task Authenticate_Success_MyTestLogin()
         {
             var apiVersion = "v50.0";
-            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\cerficate\server.key");
+            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\My_Trial_cerficate\server.key");
             var passPhrase = "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B";
             var isProd = true;
             var clientId = "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.";
@@ -189,6 +189,33 @@ namespace TokenGenerator.Tests
             Assert.NotNull(accessToken);
         }
 
-      
+
+        [Fact]
+        public async Task Authenticate_Success_MyTest_SandBox_CP_Login()
+        {
+            var apiVersion = "v50.0";
+            var privateKey = CommonHelpers.LoadFromFile(@"C:\source\CP\CDX\CP_Sandbox_Certificate\server.key");
+            var clientId = "3MVG9rnryk9FxFMU55T_u.QbYZp.ysHjyKlUDZzdDa5G2j3XhuLwuIu4XMANi1HEr82rtIk2K_udM36YOcDV3";
+            var clientSecret = "00697E8C79FDD630FEB795D1CAAAB6619B3761CB3DBF19E8C33B9940BCFADB3A";
+            var isProd = false;
+          
+            var authClient = new JwtAuthenticationClient(apiVersion, isProd);
+            var redirectUri = "https://test.salesforce.com";
+            var endpoint =
+            $"https://test.salesforce.com/services/oauth2/token?response_type=token&client_id={clientId}&redirect_uri={redirectUri}";
+
+            await authClient.JwtPrivateKeyAsync(
+                            clientId,
+                            privateKey,
+                            clientSecret,
+                            "michael.braverman@clearpoint.co.nz.authapi",
+                            endpoint);
+
+            var accessToken = authClient.AccessToken;
+
+            Assert.NotNull(accessToken);
+        }
+
+
     }
 }
