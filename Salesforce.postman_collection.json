@@ -1,0 +1,501 @@
+{
+	"info": {
+		"_postman_id": "c1abf04f-fa8a-4a2b-ae42-74c087ec94c9",
+		"name": "Salesforce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "418535"
+	},
+	"item": [
+		{
+			"name": "Salesforce validate assertion token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+							"type": "text"
+						},
+						{
+							"key": "assertion",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzTVZHOU42ZURtWlJWSk9rRFpIME9aQjQ5c2xFTEROMHFmWTIwY1Z6WnpLRDRxenVicmxMd05TOU4wOTA0S0VUNkwycWhSRmx5Sy40RlBVZjd3dUxBIiwic3ViIjoiY3Jtc2VydmljZXNmQGNvdW50ZG93bi5jby5uei50ZXN0IiwiZXhwIjoxNjU2NTQ5ODY1LCJuYmYiOjE2NTY1NDYyNjUsImF1ZCI6Imh0dHBzOi8vbG9naW4uc2FsZXNmb3JjZS5jb20ifQ.MD1hyIzppl8WpQBIvVhtLBQUrdwlyyrO4yTlPZTPXqhXRNRp28yfn7FN3se3OqYwSaZy8r51zyuxaRsEq5D219FpdbeNZvB8Bt671ixJhpdRmyuRu8XdHQydhbxsxzxUouWMN0CKlgsb0R1-C2s603rPOIoheBFRpXoaED8jm5UItCzeiJoRCoiYxxIVCSGVtZOuMSLhjjV_kGBctLzljua8Vb39ahX6FsZbToaSq9QadPvPWxV8dYGgPOteo5CYoZTIow6ij3YH6I56--E8oY53-ar_48VQTFYsoVpo5IKIeA3H6lc8cW8MesoT5y5zZjMhxiKQ350VoAgA2yN6op3UJ_lB3JT1J_a-kpvB4rw_tmzC3oDWOZdGl-oBe48I_eQj4AADdOao39JjFyFgdMwKlCMmTd7uzdgJULrDXe9X7V1tLoo9x9YYWWiKurVk3fyZpvdipiTm1BE-K-BuFqz5jDW9JXrAD8d4TMt4fO_afKNal11qzfztfjODWa1fAT-KhZcd1Tv3vSrZhUgEJQDOQb07oed0BFlrtwS_01gaGl8GfKQ9tPV_UXcHr0O2VFqdHXzTqTc90TkRKBz3L5hkq8GPt5wVeAOMRgjkxjxCOocObVbQXyFTmWEE9tGBZx97zfL6H6chQefOh9EFe34og_mLGLrqrEcTy33cujI",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Salesforce test validate assertion token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+							"type": "text"
+						},
+						{
+							"key": "assertion",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzTVZHOU42ZURtWlJWSk9rRFpIME9aQjQ5c2xFTEROMHFmWTIwY1Z6WnpLRDRxenVicmxMd05TOU4wOTA0S0VUNkwycWhSRmx5Sy40RlBVZjd3dUxBIiwic3ViIjoiY3Jtc2VydmljZXNmQGNvdW50ZG93bi5jby5uei50ZXN0IiwiZXhwIjoxNjU2NTQ5ODY1LCJuYmYiOjE2NTY1NDYyNjUsImF1ZCI6Imh0dHBzOi8vbG9naW4uc2FsZXNmb3JjZS5jb20ifQ.MD1hyIzppl8WpQBIvVhtLBQUrdwlyyrO4yTlPZTPXqhXRNRp28yfn7FN3se3OqYwSaZy8r51zyuxaRsEq5D219FpdbeNZvB8Bt671ixJhpdRmyuRu8XdHQydhbxsxzxUouWMN0CKlgsb0R1-C2s603rPOIoheBFRpXoaED8jm5UItCzeiJoRCoiYxxIVCSGVtZOuMSLhjjV_kGBctLzljua8Vb39ahX6FsZbToaSq9QadPvPWxV8dYGgPOteo5CYoZTIow6ij3YH6I56--E8oY53-ar_48VQTFYsoVpo5IKIeA3H6lc8cW8MesoT5y5zZjMhxiKQ350VoAgA2yN6op3UJ_lB3JT1J_a-kpvB4rw_tmzC3oDWOZdGl-oBe48I_eQj4AADdOao39JjFyFgdMwKlCMmTd7uzdgJULrDXe9X7V1tLoo9x9YYWWiKurVk3fyZpvdipiTm1BE-K-BuFqz5jDW9JXrAD8d4TMt4fO_afKNal11qzfztfjODWa1fAT-KhZcd1Tv3vSrZhUgEJQDOQb07oed0BFlrtwS_01gaGl8GfKQ9tPV_UXcHr0O2VFqdHXzTqTc90TkRKBz3L5hkq8GPt5wVeAOMRgjkxjxCOocObVbQXyFTmWEE9tGBZx97zfL6H6chQefOh9EFe34og_mLGLrqrEcTy33cujI",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRMApp token request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "aPrx_yTkbIprMMjFVxxN5kSrUifLkEkNlm7.Z4ByTgFukOcfD1pVYLkPw8PJ2XaWcZYnlg0VzA==",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRMApp token request my Sandbox",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "aPrx_yTkbIprMMjFVxxN5kSrUifLkEkNlm7.Z4ByTgFukOcfD1pVYLkPw8PJ2XaWcZYnlg0VzA==",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRMApp token request no code test saleceforce account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						},
+						{
+							"key": "assertion",
+							"value": "eyJhbGciOiAiUlMyNTYifQ.eyJpc3MiOiIzTVZHOXd0NElMNE81d3ZMdlIwNVZRSEJ1S2VFME1mbVl5alFNNnQ0RUN3N1l5c2ZXOF8zdXAuQVkxN3QyM3haV1NlUFRYT0hfTlloa0hmN25MNW8uIiwic3ViIjoibWljaGFlbC5icmF2ZXJtYW4ta3hxOEBmb3JjZS5jb20iLCJhdWQiOiJodHRwczovL2xvZ2luLnNhbGVzZm9yY2UuY29tIiwiZXhwIjoiMTY1Njg5MjE2MyJ9.O-QYuDBtMfE2TTofCa7dA-zc6Sbci9ABYn7U8O9sYGAeRfV_JOiK1KUcydS2AqZ3qrSA1nA6HAqnZal8PZRGgHOzDKodT6R-5ef29oDAbS9UZrJdhyLuWMj3UoW6vuR-_0vch-hhuqe0vYOB_tqzlCx8eOlrL2WtWTvCH8uDVUSoCDMIJjbQVwF29VlXk48683Qofycn70hwQ0q9puvACemKmnY1KVQeI-ZjGZo0Snc8PF-CQKrTFypUM-Nna1fJqNiCXoyqNE-AWI8ONwLiMHNRz23PeY4iioXiBMr6JwzuDWjpPIttuxPwo1q3yZH_d5mHexFUpFS7bLGyJ8EVhw",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRMApp token request no code CP account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9N6eDmZRVJOkDZH0OZB49srYoRFK.TOTv_hAW4tLq8l.p3yTo0NqMIRltFTH38nmI6hgThDvEV0XG8d0.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "DB979B87530485840F0A6912EEEE1CFBF9FFBA6BABC9EE739E3359F6B63F4BF6",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						},
+						{
+							"key": "assertion",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzTVZHOU42ZURtWlJWSk9rRFpIME9aQjQ5c2xFTEROMHFmWTIwY1Z6WnpLRDRxenVicmxMd05TOU4wOTA0S0VUNkwycWhSRmx5Sy40RlBVZjd3dUxBIiwic3ViIjoiY3Jtc2VydmljZXNmQGNvdW50ZG93bi5jby5uei50ZXN0IiwiZXhwIjoxNjU2ODk2NDY0LCJuYmYiOjE2NTY4OTI4NjQsImF1ZCI6Imh0dHBzOi8vbG9naW4uc2FsZXNmb3JjZS5jb20ifQ.MhwivuYG4y6RHvGZcYSuhefHmIeJZAM3MV32xDubKaVuHuhRYkVPq-SsUVSQHtwNV3Ueuqekvqw8oeRwmt7IgHNTr72x-2IMn-C9qYACDif143r6mSrcSSwhcZiCH7yKsYCLeE7_hd8jzWwlSS2EPKun7TT4qmgNs-bvdHDMTG0CwWWHVlABqj7LR_xqlV1UIpv3_hI-LFlJi1uGES2nm42HJsI5PLQDIpQDNaLij3d4M1jz-TMOaKDlVCshrkE8SkcHqYXQj6o-aMoUvRxN5-VqlZXFURWXRvk6KqQtWsY6m75NDEipqTTH_QHWKA5O4UwxkwGROKT44g2uT4cjgGno8uXFXs5URdExTep30QqOsEC4iS_1XGfvwPeNmtwPEzrUpBOyisUouQoanjR3FdB0yjzSZtleSa0n2NnGpSQVItatqwzhkKiluglIHWUfb3tw5cy96RuHg09djvFFJeHr8xkFIKraPG5PPevr0RdZ6QHH4knH4g1NxUlCrGV5R8K1MjdGgfu9U5QA-LteJ9OJGdw5WrKw7h4chWGJCF7eIrtuX8B980-dz2xV59r4vNLIS0nWqRNJdfOPeqqCPJMJZKkJhOJwHYwDQWM77THqhVibSZ7CJUTF_a8D7knWtTGFTBPpYvZ_0mfE1AWgERCozniI15mHMCrrQ-Gh9f4",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CRMApp token request SandBox",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9N6eDmZRVJOkDZH0OZB49srYoRFK.TOTv_hAW4tLq8l.p3yTo0NqMIRltFTH38nmI6hgThDvEV0XG8d0.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "DB979B87530485840F0A6912EEEE1CFBF9FFBA6BABC9EE739E3359F6B63F4BF6",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						},
+						{
+							"key": "assertion",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiIzTVZHOU42ZURtWlJWSk9rRFpIME9aQjQ5c2xFTEROMHFmWTIwY1Z6WnpLRDRxenVicmxMd05TOU4wOTA0S0VUNkwycWhSRmx5Sy40RlBVZjd3dUxBIiwic3ViIjoiY3Jtc2VydmljZXNmQGNvdW50ZG93bi5jby5uei50ZXN0IiwiZXhwIjoxNjU2ODk2NDY0LCJuYmYiOjE2NTY4OTI4NjQsImF1ZCI6Imh0dHBzOi8vbG9naW4uc2FsZXNmb3JjZS5jb20ifQ.MhwivuYG4y6RHvGZcYSuhefHmIeJZAM3MV32xDubKaVuHuhRYkVPq-SsUVSQHtwNV3Ueuqekvqw8oeRwmt7IgHNTr72x-2IMn-C9qYACDif143r6mSrcSSwhcZiCH7yKsYCLeE7_hd8jzWwlSS2EPKun7TT4qmgNs-bvdHDMTG0CwWWHVlABqj7LR_xqlV1UIpv3_hI-LFlJi1uGES2nm42HJsI5PLQDIpQDNaLij3d4M1jz-TMOaKDlVCshrkE8SkcHqYXQj6o-aMoUvRxN5-VqlZXFURWXRvk6KqQtWsY6m75NDEipqTTH_QHWKA5O4UwxkwGROKT44g2uT4cjgGno8uXFXs5URdExTep30QqOsEC4iS_1XGfvwPeNmtwPEzrUpBOyisUouQoanjR3FdB0yjzSZtleSa0n2NnGpSQVItatqwzhkKiluglIHWUfb3tw5cy96RuHg09djvFFJeHr8xkFIKraPG5PPevr0RdZ6QHH4knH4g1NxUlCrGV5R8K1MjdGgfu9U5QA-LteJ9OJGdw5WrKw7h4chWGJCF7eIrtuX8B980-dz2xV59r4vNLIS0nWqRNJdfOPeqqCPJMJZKkJhOJwHYwDQWM77THqhVibSZ7CJUTF_a8D7knWtTGFTBPpYvZ_0mfE1AWgERCozniI15mHMCrrQ-Gh9f4",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SaleforceDataFetch token request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "text"
+						},
+						{
+							"key": "code",
+							"value": "aPrx_yTkbIprMMjFVxxN5kSrUvG9383.u1b.i9NFBm0Hy6qWzLRpu7.34XzDTsDjoFFHhrhnQQ==",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKZK1I.KEuRPnV5j6HzAx.fLj27CodYqGi7v2eSCOWOSDy_yX6vwiyCiKYgYO",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "78C867C6474C5E6BFFCE21512B69819855B18F936AA849D5CD2355D67D1D58A9",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://login.salesforce.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "by domain and password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "michael.braverman-kxq8@force.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "P@ssw0rd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://d5i000006jgpdea0.my.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"d5i000006jgpdea0",
+						"my",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "grant_type=password login.salesforce",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "3MVG9wt4IL4O5wvLvR05VQHBuKeE0MfmYyjQM6t4ECw7YysfW8_3up.AY17t23xZWSePTXOH_NYhkHf7nL5o.",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "BA25102E470B1B7C236E20B6107E6A0E859CE1136941F46130A9AB4D9FFEDE0B",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "michael.braverman-kxq8@force.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "P@ssw0rd",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://login.salesforce.com/services/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"login",
+						"salesforce",
+						"com"
+					],
+					"path": [
+						"services",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
