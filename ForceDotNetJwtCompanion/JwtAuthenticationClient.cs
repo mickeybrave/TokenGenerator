@@ -21,51 +21,32 @@ namespace ForceDotNetJwtCompanion
         string AccessToken { get; set; }
         string Id { get; set; }
         string ApiVersion { get; set; }
+        string JWT { get; set; }
+
+       
+        /// <summary>
+        /// JwtPrivateKeyAsync
+        ///
+        /// Obtain access token with encrypted private key
+        /// with token endpoint
+        /// </summary>
+        /// <param name="clientId">ClientId of the Connected App aka Consumer Key</param>
+        /// <param name="privateKey">Private key as string, it is not required to remove header and footer</param>
+        /// <param name="clientSecret">Passphrase of the private key or clientSecret</param>
+        /// <param name="username">Salesforce username</param>
+        /// <param name="tokenEndpoint">TokenEndpointUrl e.g. https://test.salesforce.com/services/oauth2/token</param>
+        Task JwtPrivateKeyAsync(string clientId, string privateKey, string clientSecret, string username, string tokenEndpoint);
 
         /// <summary>
-        /// JwtUnencryptedPrivateKeyAsync
-        ///
-        /// Obtain access token with unencrypted private key (not recommended)
-        /// Token Endpoint: https://login.salesforce.com/services/oauth2/token (production) 
+        /// clientId, privateKey and secret are set in the content of post response
         /// </summary>
         /// <param name="clientId">ClientId of the Connected App aka Consumer Key</param>
-        /// <param name="key">Private key as string, it is not required to remove header and footer</param>
-        /// <param name="username">Salesforce username</param>
-        Task JwtUnencryptedPrivateKeyAsync(string clientId, string key, string username);
-        /// <summary>
-        /// JwtPrivateKeyAsync
-        /// 
-        /// Obtain access token with encrypted private key
-        /// Token Endpoint: https://login.salesforce.com/services/oauth2/token (production) 
-        /// </summary>
-        /// <param name="clientId">ClientId of the Connected App aka Consumer Key</param>
-        /// <param name="key">Private key as string, it is not required to remove header and footer</param>
-        /// <param name="passphrase">Passphrase of the private key</param>
-        /// <param name="username">Salesforce username</param>
-        Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username);
-        /// <summary>
-        /// JwtUnencryptedPrivateKeyAsync
-        ///
-        /// Obtain access token with unencrypted private key (not recommended)
-        /// with token endpoint
-        /// </summary>
-        /// <param name="clientId">ClientId of the Connected App aka Consumer Key</param>
-        /// <param name="key">Private key as string, it is not required to remove header and footer</param>
+        /// <param name="privateKey">Private key as string, it is not required to remove header and footer</param>
+        /// <param name="clientSecret">Passphrase of the private key or clientSecret</param>
         /// <param name="username">Salesforce username</param>
         /// <param name="tokenEndpoint">TokenEndpointUrl e.g. https://test.salesforce.com/services/oauth2/token</param>
-        Task JwtUnencryptedPrivateKeyAsync(string clientId, string key, string username, string tokenEndpoint);
-        /// <summary>
-        /// JwtPrivateKeyAsync
-        ///
-        /// Obtain access token with encrypted private key
-        /// with token endpoint
-        /// </summary>
-        /// <param name="clientId">ClientId of the Connected App aka Consumer Key</param>
-        /// <param name="key">Private key as string, it is not required to remove header and footer</param>
-        /// <param name="passphrase">Passphrase of the private key</param>
-        /// <param name="username">Salesforce username</param>
-        /// <param name="tokenEndpoint">TokenEndpointUrl e.g. https://test.salesforce.com/services/oauth2/token</param>
-        Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username, string tokenEndpoint);
+        /// <returns></returns>
+        Task JwtPrivateKeyByClientIdAsync(string clientId, string privateKey, string clientSecret, string username, string tokenEndpoint);
     }
 
     public class JwtAuthenticationClient : IJwtAuthenticationClient
@@ -108,31 +89,7 @@ namespace ForceDotNetJwtCompanion
             _isProd = isProd;
         }
 
-        public async Task JwtUnencryptedPrivateKeyAsync(string clientId, string key, string username)
-        {
-            Validators.ClientIdKeyUserNameValidator(clientId, key, username);
-            await JwtUnencryptedPrivateKeyAsync(clientId, key, username, TokenRequestEndpointUrl);
-        }
-
-        public async Task JwtPrivateKeyAsync(string clientId, string key, string passphrase, string username)
-        {
-            Validators.ClientIdKeyPassphraseUserNameValidator(clientId, key, passphrase, username);
-            await JwtPrivateKeyAsync(clientId, key, passphrase, username, TokenRequestEndpointUrl);
-        }
-
-        public async Task JwtUnencryptedPrivateKeyAsync(string clientId, string key, string username, string tokenEndpoint)
-        {
-            (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(
-                CreateJwt(
-                    clientId,
-                    KeyHelpers.CreatePrivateKeyWrapper(key),
-                    username,
-                    _isProd ? ProdAudience : TestAudience
-                ),
-                tokenEndpoint
-            );
-        }
-
+        #region IJwtAuthenticationClient
         public async Task JwtPrivateKeyByClientIdAsync(string clientId, string privateKey, string clientSecret, string username, string tokenEndpoint)
         {
             JWT = CreateJwt(
@@ -153,21 +110,21 @@ namespace ForceDotNetJwtCompanion
             JWT = CreateJwt(
                     clientId,
                     KeyHelpers.CreatePrivateKeyWrapperWithPassPhrase(privateKey, clientSecret),
-                    username,
-                    _isProd ? ProdAudience : TestAudience
-                );
+                    username, _isProd ? ProdAudience : TestAudience);
 
             (Id, InstanceUrl, AccessToken) = await CallTokenEndpoint(JWT, tokenEndpoint);
 
         }
+        #endregion
 
+        #region Private Methods
         private string CreateJwt(string clientId, PrivateKeyWrapper keyWrapper, string username, string audience) =>
-            Jwt.Jwt.CreateJwt(keyWrapper)
-                .AddExpiration(DateTime.UtcNow)
-                .AddSubject(username)
-                .AddAudience(audience)
-                .AddConsumerKey(clientId)
-                .Build();
+          Jwt.Jwt.CreateJwt(keyWrapper)
+              .AddExpiration(DateTime.UtcNow)
+              .AddSubject(username)
+              .AddAudience(audience)
+              .AddConsumerKey(clientId)
+              .Build();
 
         private async Task<AuthToken> CallTokenEndpoint(string jwt, string clientId, string clientSecret, string tokenEndpoint)
         {
@@ -188,37 +145,7 @@ namespace ForceDotNetJwtCompanion
 
             HttpResponseMessage responseMessage;
 
-            try
-            {
-                responseMessage = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseContentRead);
-            }
-            catch (Exception exc)
-            {
-                throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
-            }
-
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                var stringResult = await responseMessage.Content.ReadAsStringAsync();
-                var authToken = JsonConvert
-                    .DeserializeObject<AuthToken>(stringResult);
-                return authToken;
-            }
-
-            try
-            {
-                var stringError = await responseMessage.Content.ReadAsStringAsync();
-                var errorResponse = JsonConvert
-                    .DeserializeObject<AuthErrorResponse>(stringError);
-                throw new ForceAuthenticationException(
-                    responseMessage.StatusCode,
-                    $"{errorResponse.Error}: {errorResponse.ErrorDescription}"
-                );
-            }
-            catch (Exception exc)
-            {
-                throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
-            }
+            return await BuildResponse(request);
         }
 
         private async Task<AuthToken> CallTokenEndpoint(string jwt, string tokenEndpoint)
@@ -234,7 +161,13 @@ namespace ForceDotNetJwtCompanion
                 })
             };
             request.Headers.UserAgent.ParseAdd(string.Concat(UserAgent, "/", ApiVersion));
+            return await BuildResponse(request);
+           
+        }
 
+
+        private async Task<AuthToken> BuildResponse(HttpRequestMessage request)
+        {
             HttpResponseMessage responseMessage;
 
             try
@@ -268,7 +201,11 @@ namespace ForceDotNetJwtCompanion
             {
                 throw new ForceAuthenticationException(HttpStatusCode.InternalServerError, exc.Message);
             }
+
         }
+        #endregion
+
+        #region IDisposable
         public void Dispose()
         {
             if (_disposeHttpClient)
@@ -276,5 +213,7 @@ namespace ForceDotNetJwtCompanion
                 _httpClient?.Dispose();
             }
         }
+        #endregion
+
     }
 }
